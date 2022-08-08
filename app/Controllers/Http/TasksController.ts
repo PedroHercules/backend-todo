@@ -20,7 +20,7 @@ export default class TasksController {
   }
 
   public async index({ response } : HttpContextContract) {
-    const tasks = await Task.all();
+    const tasks = await Task.query().preload('subtasks');
 
     if (tasks.length == 0) {
       return response.status(404).json({ message: "tasks empty" });
@@ -41,6 +41,8 @@ export default class TasksController {
     if (!task) {
       return response.status(404).json({ message: "task not found" });
     }
+
+    await task.load('subtasks')
 
     return response.status(200).json({
       task
