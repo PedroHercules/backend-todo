@@ -10,7 +10,13 @@ type taskType = {
 }
 
 export default class TasksController {
-  public async store({ request, response } : HttpContextContract) {
+  public async create({ request, response, auth } : HttpContextContract) {
+
+    const user = auth.use('api').user;
+
+    if (!user) {
+      return response.status(401).json({ message: "Unauthorized" });
+    }
 
     const taskData = request.body() as taskType;
 

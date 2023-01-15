@@ -8,7 +8,7 @@ type SubTaskType = {
 }
 
 export default class SubTasksController {
-  public async store({ request, response, params } : HttpContextContract) {
+  public async create({ request, response, params } : HttpContextContract) {
     const { title } = request.body() as SubTaskType;
     const taskId = params.taskId;
 

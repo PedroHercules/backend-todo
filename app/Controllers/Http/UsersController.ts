@@ -36,7 +36,7 @@ export default class UsersController {
       }
       user.password = "";
 
-      const token = await auth.use('api').generate(user);
+      const token = await auth.use('api').generate(user, {expiresIn: '1 days'});
       return response.status(200).json({ user, token });
     } catch (error) {
       return response.status(500).json({ message: error.message });
