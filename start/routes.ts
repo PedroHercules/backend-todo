@@ -20,6 +20,8 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
+import './routes/user';
+
 
 Route.resource('/task', 'TasksController').apiOnly()
 Route.resource('/task/:taskId/subtask', 'SubTasksController').apiOnly()
