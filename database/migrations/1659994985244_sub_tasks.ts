@@ -4,11 +4,12 @@ export default class extends BaseSchema {
   protected tableName = 'sub_tasks'
 
   public async up () {
+    this.db.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
-      table.string('title')
+      table.uuid('id').primary().defaultTo(this.db.raw('uuid_generate_v4()'))
+      table.string('title').notNullable()
       
-      table.integer('task_id').unsigned().references('tasks.id').onDelete('CASCADE')
+      table.uuid('task_id').references('tasks.id').notNullable().onDelete('CASCADE')
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

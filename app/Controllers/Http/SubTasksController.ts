@@ -12,10 +12,6 @@ export default class SubTasksController {
     const { title } = request.body() as SubTaskType;
     const taskId = params.taskId;
 
-    if (isNaN(taskId)) {
-      return response.status(400).json({ message: "Parameter must be a number" });
-    }
-
     const task = await Task.find(taskId)
 
     if (!task) {
