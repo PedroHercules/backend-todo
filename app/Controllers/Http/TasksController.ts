@@ -10,7 +10,13 @@ type taskType = {
 }
 
 export default class TasksController {
-  public async store({ request, response } : HttpContextContract) {
+  public async create({ request, response, auth } : HttpContextContract) {
+
+    const user = auth.use('api').user;
+
+    if (!user) {
+      return response.status(401).json({ message: "Unauthorized" });
+    }
 
     const taskData = request.body() as taskType;
 
@@ -19,14 +25,19 @@ export default class TasksController {
     return response.status(201).json({task})
   }
 
-  public async index({ response } : HttpContextContract) {
-    const tasks = await Task.query().preload('subtasks');
+  public async index({ request, response } : HttpContextContract) {
+    const page = Number(request.qs().page) || 1;
+    const perPage = Number(request.qs().perPage) || 5;
+    
+    const tasks = await Task.query().preload('subtasks').paginate(page, perPage);
 
     if (tasks.length == 0) {
       return response.status(404).json({ message: "tasks empty" });
     }
 
-    return response.status(200).json({ tasks });
+    const { data, meta } = tasks.serialize();
+
+    return response.status(200).json({ tasks: data, meta });
   }
 
   public async show({ params, response } : HttpContextContract) {

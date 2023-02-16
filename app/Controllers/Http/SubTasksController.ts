@@ -8,13 +8,9 @@ type SubTaskType = {
 }
 
 export default class SubTasksController {
-  public async store({ request, response, params } : HttpContextContract) {
+  public async create({ request, response, params } : HttpContextContract) {
     const { title } = request.body() as SubTaskType;
     const taskId = params.taskId;
-
-    if (isNaN(taskId)) {
-      return response.status(400).json({ message: "Parameter must be a number" });
-    }
 
     const task = await Task.find(taskId)
 

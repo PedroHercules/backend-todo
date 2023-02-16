@@ -1,15 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'sub_tasks'
+  protected tableName = 'api_tokens'
 
   public async up () {
-    this.db.raw('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"')
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary().defaultTo(this.db.raw('uuid_generate_v4()'))
-      table.string('title').notNullable()
-      
-      table.uuid('task_id').references('tasks.id').notNullable().onDelete('CASCADE')
+      table.increments('id').primary();
+      table.uuid('user_id').references('users.id').onDelete('CASCADE')
+      table.string('name').notNullable()
+      table.string('type').notNullable()
+      table.string('token', 64).notNullable().unique()
+      table.timestamp('expires_at', {useTz: true}).nullable()
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
        */

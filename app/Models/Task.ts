@@ -1,10 +1,13 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeCreate, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import SubTask from './SubTask'
+import User from './User'
+
+import { v4 as uuidv4 } from 'uuid'
 
 export default class Task extends BaseModel {
   @column({ isPrimary: true })
-  public id: number
+  public id: string
 
   @column()
   public title: string
@@ -15,6 +18,12 @@ export default class Task extends BaseModel {
   @column()
   public date: string
 
+  @column()
+  public userId: string
+
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
+
   @hasMany(() => SubTask)
   public subtasks: HasMany<typeof SubTask>
 
@@ -23,4 +32,10 @@ export default class Task extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+
+  @beforeCreate()
+  public static async generateUUID(task: Task) {
+    task.id = uuidv4()
+  }
 }
